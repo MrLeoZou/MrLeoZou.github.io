@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MrLeoZou" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近公司项目重构，webview也算是一个大头，早在WWDC 2014 就推出了WKWebView，现如今iOS已经更新到11了，如果还使用UIWebView的话实在有些过分啦。然后，就这样愉快地踏上了挖坑和填坑之路了。 WKWebview的坊间传闻 更少的内存占用，相当于UIWebView的1/4 ~ 3/4 与Sa">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WKWebView的填坑之路">
+<meta property="og:url" content="http://yoursite.com/2018/03/10/WKWebView的填坑之路/index.html">
+<meta property="og:site_name" content="MrLeoZou">
+<meta property="og:description" content="最近公司项目重构，webview也算是一个大头，早在WWDC 2014 就推出了WKWebView，现如今iOS已经更新到11了，如果还使用UIWebView的话实在有些过分啦。然后，就这样愉快地踏上了挖坑和填坑之路了。 WKWebview的坊间传闻 更少的内存占用，相当于UIWebView的1/4 ~ 3/4 与Safari相同的JavaScript引擎，同时支持更多的HTML5特性 高达60f">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-21T08:42:52.137Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WKWebView的填坑之路">
+<meta name="twitter:description" content="最近公司项目重构，webview也算是一个大头，早在WWDC 2014 就推出了WKWebView，现如今iOS已经更新到11了，如果还使用UIWebView的话实在有些过分啦。然后，就这样愉快地踏上了挖坑和填坑之路了。 WKWebview的坊间传闻 更少的内存占用，相当于UIWebView的1/4 ~ 3/4 与Safari相同的JavaScript引擎，同时支持更多的HTML5特性 高达60f">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'ECH48TB1OA',
+      apiKey: '25717ec7cd487a38231ab7a3d6d8c07a',
+      indexName: 'hexo_NAME',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文章，耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/10/WKWebView的填坑之路/"/>
+
+
+
+
+
+  <title>WKWebView的填坑之路 | MrLeoZou</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/MrLeoZou" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MrLeoZou</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">iOS开发者,大前端学习者</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/10/WKWebView的填坑之路/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MrLeoZou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/8272390?s=400&u=bbaa08ebea7648f5f5e56559bea1db50cc78d4ca&v=4avatar">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MrLeoZou">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WKWebView的填坑之路</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T22:12:42+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/10/WKWebView的填坑之路/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/10/WKWebView的填坑之路/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/03/10/WKWebView的填坑之路/" class="leancloud_visitors" data-flag-title="WKWebView的填坑之路">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,426
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近公司项目重构，webview也算是一个大头，早在WWDC 2014 就推出了WKWebView，现如今iOS已经更新到11了，如果还使用UIWebView的话实在有些过分啦。然后，就这样愉快地踏上了挖坑和填坑之路了。</p>
+<h1 id="WKWebview的坊间传闻"><a href="#WKWebview的坊间传闻" class="headerlink" title="WKWebview的坊间传闻"></a>WKWebview的坊间传闻</h1><ul>
+<li>更少的内存占用，相当于UIWebView的1/4 ~ 3/4</li>
+<li>与Safari相同的JavaScript引擎，同时支持更多的HTML5特性</li>
+<li>高达60fps的滚动刷新以及更快的加载速度</li>
+<li>更为细致地拆分了UIWebViewDelegate中的方法<br>如上，基本都是报喜不报忧，其实按照数目来算的话，坑点肯定比优势多，只不过对比起来，坑点十个也抵不上一个优势。<br><code>毕竟h5的话最重要的还是提升体验，因此WKWebView也必然是大势所趋</code>  </li>
+</ul>
+<h1 id="WKWebView几个tips"><a href="#WKWebView几个tips" class="headerlink" title="WKWebView几个tips"></a>WKWebView几个tips</h1><h3 id="title"><a href="#title" class="headerlink" title="title"></a>title</h3><p>可以通过kvo监听当前webview的title属性值变化，获取到当前HTML设置的页面标题，然后动态设置APP原生的navigationBar的标题</p>
+<h3 id="estimatedProgress"><a href="#estimatedProgress" class="headerlink" title="estimatedProgress"></a>estimatedProgress</h3><p>同理，可以通过kvo监听当前webview的estimatedProgress属性值变化，表示当前webview的加载进度，通常用于设置页面进度条。<code>当然，这是一个准确值，如果想要做成微信的体验，那需要自己先跑一个假的值，到达某个值后切换成真实值。</code></p>
+<h3 id="与原生JS交互变化"><a href="#与原生JS交互变化" class="headerlink" title="与原生JS交互变化"></a>与原生JS交互变化</h3><p>这算是影响最大的一个改动了，因为h5端也需要改变调用方式。APP中由原来的UIWebView通过注入方法到JSContext中变成统一使用WKUserContentController来添加和移除方法，最后统一回调到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;</span><br></pre></td></tr></table></figure></p>
+<p>中进行处理。同时h5端的调用方法也变成了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">window.webkit.messageHandlers.方法名.postMessage(参数)</span><br></pre></td></tr></table></figure></p>
+<p>这样的形式。  </p>
+<p><em><strong>接下来开始填坑</strong></em></p>
+<h1 id="cookie丢失"><a href="#cookie丢失" class="headerlink" title="cookie丢失"></a>cookie丢失</h1><p><strong>WKWebView的cookie可以算得上的一个重伤了，不过解决起来还好。</strong>  </p>
+<h3 id="cookie的存储"><a href="#cookie的存储" class="headerlink" title="cookie的存储"></a>cookie的存储</h3><p>一般来说，cookie都是存储在NSHTTPCookieStorage中，WKWebView也是如此（虽然坊间传闻是存在私有空间中，其实并不是）。但WKWebView的cookie最大的问题在于：<code>在发起请求时候，不会自动带上存放在NSHTTPCookieStorage中的cookie</code>，这个在UIWebView是不存在的问题。这样一来导致很多重要数据丢失，影响甚大，比如h5登录态同步的问题。  </p>
+<h3 id="丢失原因"><a href="#丢失原因" class="headerlink" title="丢失原因"></a>丢失原因</h3><p><strong>WKProcessPool</strong>，苹果文档中有对WKProcessPool的描述：<em>A WKProcessPool object represents a pool of Web Content process.</em>。就是说所有的webview都共享一个WKProcessPool对象，从而实现cookie数据共享，但是这个WKProcessPool对象在APP进程被kill或者重启后会被重置，导致cookie中的数据被清空了。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>目前业内主要解决方案分两种情况：</p>
+<h4 id="解决首次请求cookie丢失"><a href="#解决首次请求cookie丢失" class="headerlink" title="解决首次请求cookie丢失"></a>解决首次请求cookie丢失</h4><p>主要通过手动设置request header中的cookie值，再加载请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">[NSHTTPCookieStorage sharedHTTPCookieStorage].cookieAcceptPolicy = NSHTTPCookieAcceptPolicyOnlyFromMainDocumentDomain;</span><br><span class="line">NSHTTPCookie *newCookie = [NSHTTPCookie cookieWithProperties:[NSDictionary dictionaryWithObjectsAndKeys:                                                              @&quot;https://www.baidu.com&quot;,NSHTTPCookieDomain,                                                              @&quot;wap/passport&quot;,NSHTTPCookieName,                                                              @&quot;test-session&quot;,NSHTTPCookieValue,                                                              @&quot;TRUE&quot;,NSHTTPCookieSecure,                                               nil]];</span><br><span class="line">if (url) &#123;</span><br><span class="line">    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:[NSArray arrayWithObjects:newCookie, nil] forURL:url mainDocumentURL:url];</span><br><span class="line">&#125;</span><br><span class="line">NSMutableDictionary *requestHeaderFields = [NSMutableDictionary dictionaryWithDictionary:[NSHTTPCookie requestHeaderFieldsWithCookies:[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies]];</span><br><span class="line">request.allHTTPHeaderFields = requestHeaderFields;</span><br><span class="line">[self.webView loadRequest:request];</span><br></pre></td></tr></table></figure></p>
+<h4 id="解决后续请求cookie丢失"><a href="#解决后续请求cookie丢失" class="headerlink" title="解决后续请求cookie丢失"></a>解决后续请求cookie丢失</h4><p>通过document.cookie设置Cookie解决后续页面(同域)Ajax、iframe请求的Cookie问题；  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//注入webview一个Cookie  </span><br><span class="line">WWKUserContentController* userContentController = [[WKUserContentController alloc] init]; </span><br><span class="line">WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @&quot;document.cookie = &apos;cookieKey=cookieValue&apos;;&quot; injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]; </span><br><span class="line">[userContentController addUserScript:cookieScript];</span><br></pre></td></tr></table></figure>
+<p><strong>以上注入cookie有两个注意点</strong>：  </p>
+<ol>
+<li>无法解决跨域cookie丢失问题，只能用于同域；</li>
+<li>不能解决302跳转问题，因为302跳转cookie会再次丢失，可以代理方法拦截重新设置cookie解决。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler</span><br><span class="line">&#123;</span><br><span class="line">    //解决Cookie丢失问题</span><br><span class="line">    [self fixRequest:navigationAction.request];</span><br><span class="line">    //允许跳转</span><br><span class="line">    decisionHandler(WKNavigationActionPolicyAllow);</span><br><span class="line">&#125;  </span><br><span class="line">- (NSURLRequest *)fixRequest:(NSURLRequest *)request</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableURLRequest *fixedRequest;</span><br><span class="line">    if ([request isKindOfClass:[NSMutableURLRequest class]]) &#123;</span><br><span class="line">        fixedRequest = (NSMutableURLRequest *)request;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        fixedRequest = request.mutableCopy;</span><br><span class="line">    &#125;</span><br><span class="line">    NSDictionary *dict = [NSHTTPCookie requestHeaderFieldsWithCookies:[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies];</span><br><span class="line">    if (dict.count) &#123;</span><br><span class="line">        NSMutableDictionary *mDict = request.allHTTPHeaderFields.mutableCopy;</span><br><span class="line">        [mDict setValuesForKeysWithDictionary:dict];</span><br><span class="line">        fixedRequest.allHTTPHeaderFields = mDict;</span><br><span class="line">    &#125;</span><br><span class="line">    return fixedRequest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="NSURLProtocol不可用"><a href="#NSURLProtocol不可用" class="headerlink" title="NSURLProtocol不可用"></a>NSURLProtocol不可用</h1><p><strong>在WKWebView中NSURLProtocol的使用也是一个重伤，可以说是致命的，也是最耗时最难搞的问题</strong><br>需求：页面需要离线缓存，在无网的时候也能正常打开和展示，因此需要拦截webview的网络请求，获取数据存储在本地供离线时使用。<br><code>问题：</code>在 WKWebView 上直接使用 NSURLProtocol 无法拦截请求<br><code>原因：</code>WKWebView 在独立于 app 进程之外的进程中执行网络请求，请求数据不经过主进程。这也是WKWebView能有更好的体验一重要原因，但目前可以说是一把双刃剑了。<br><code>方案：</code>目前业内主要解决方案是参考Apple开源的webKit2源码，其中暴露的私有API： </p>
+<p><code>+ [WKBrowsingContextController registerSchemeForCustomProtocol:]</code></p>
+<p>项目中参考代码：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">+ (void)setEnableWKCustomProtocol:(BOOL)enableWKCustomProtocol</span><br><span class="line">&#123;</span><br><span class="line">    id contextController = NSClassFromString([NSString stringWithFormat:@&quot;%@%@%@&quot;,@&quot;WK&quot;,@&quot;Browsing&quot;,@&quot;ContextController&quot;]);</span><br><span class="line">    if (!contextController) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    SEL performSEL = nil;</span><br><span class="line">    if (enableWKCustomProtocol) &#123;</span><br><span class="line">        performSEL = NSSelectorFromString([NSString stringWithFormat:@&quot;%@%@&quot;,@&quot;register&quot;,@&quot;SchemeForCustomProtocol:&quot;]);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        performSEL = NSSelectorFromString([NSString stringWithFormat:@&quot;%@%@&quot;,@&quot;unregister&quot;,@&quot;SchemeForCustomProtocol:&quot;]);</span><br><span class="line">    &#125;</span><br><span class="line">#pragma clang diagnostic push</span><br><span class="line">#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;</span><br><span class="line">    if ([contextController respondsToSelector:performSEL]) &#123;</span><br><span class="line">        [contextController performSelector:performSEL withObject:@&quot;http&quot;];</span><br><span class="line">        [contextController performSelector:performSEL withObject:@&quot;https&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">#pragma clang diagnostic pop</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过自定义URLProtocol继承NSURLProtocol，并注册http/https scheme后，可以在自定义的protocol代理中拦截到网络请求。<br><code>新的问题：</code>上述方案中存在两个问题；</p>
+<h4 id="ATS支持不足"><a href="#ATS支持不足" class="headerlink" title="ATS支持不足"></a>ATS支持不足</h4><p>自定义protocol后，发现项目中配置了ATS的开关，<strong>Allow Arbitrary Loads = NO</strong>，同时<strong>Allow Arbitrary Loads in Web Content = YES</strong>；此时WKWebView发起的所有http网络请求都会被阻塞。<br>在此，顺便说一下配置ATS的正确姿势，亲测有效：<a href="https://www.jianshu.com/p/f56f70301068" target="_blank" rel="noopener">ATS的正确姿势</a>  </p>
+<h4 id="ajax发起的POST请求丢失body"><a href="#ajax发起的POST请求丢失body" class="headerlink" title="ajax发起的POST请求丢失body"></a>ajax发起的POST请求丢失body</h4><p><code>原因：</code>由于WKWebView的网络请求是在独立线程中进行，最终会通过IPC把请求Message发送给APP线程，其中在线程间通信的时候会对请求encode成Message，出于性能的考虑，encode过程会把HTTPBody和HTTPBodyStream两个字段丢弃。<br><a href="https://github.com/WebKit/webkit/blob/fe39539b83d28751e86077b173abd5b7872ce3f9/Source/WebKit2/Shared/mac/WebCoreArgumentCodersMac.mm#L61-L88" target="_blank" rel="noopener">参考1：webKit2.0源码</a><br><a href="https://bugs.webkit.org/show_bug.cgi?id=138169" target="_blank" rel="noopener">参考2：bug repo</a>  </p>
+<p><strong>解决方案：</strong>  </p>
+<blockquote>
+<p>通过注入js代码，hook网页的ajax请求，重写XMLHttpRequest的send等方法，获取到原始的post body数据,然后通过原生发起该post请求获取数据后，返回给原ajax请求，模拟ajax请求完成过程。   </p>
+</blockquote>
+<p>具体代码就不贴了，涉及到公司隐私。这里提供一个来源及原理剖析就好了，相信更有意义。  </p>
+<p><a href="https://github.com/wendux/Ajax-hook" target="_blank" rel="noopener">如何hook ajax请求</a>    </p>
+<blockquote>
+<p>提别提醒一下：hook的代码最好是通过重写方法，完成相关逻辑后，再调用原始的方法，比如send，不建议采取直接重写XMLHttpRequest整个对象。因为我们只需要重写几个方法，如果替换整个对象，那可能会产生一些莫名的bug，毕竟对象里面还有很多方法我们没有实现，同时也破坏了jQuery原来的方法，风险太大。  </p>
+</blockquote>
+<p><code>XMLHttpRequest = hookAjax;//不建议这么做</code><br>至此，我们可以顺利拦截webview发出的请求，获取到数据，并解决了post请求丢失body的问题，基本是可以支撑各种缓存需求了。</p>
+<h1 id="alert导致crash"><a href="#alert导致crash" class="headerlink" title="alert导致crash"></a>alert导致crash</h1><p>在WKWebView页面上，调用window.alert()会引起crash，原因是没有实现相关的代理方法。相关代理方法如下：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark -WKUIDelegate</span><br><span class="line">//webview有alert弹框时调用</span><br><span class="line">- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler &#123;</span><br><span class="line">    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@&quot;提示&quot; message:message preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line">    [alertController addAction:[UIAlertAction actionWithTitle:@&quot;知道了&quot; style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        completionHandler();</span><br><span class="line">    &#125;]];</span><br><span class="line">    [self presentViewController:alertController animated:YES completion:nil];</span><br><span class="line">&#125;</span><br><span class="line">//webview有confirm弹框时调用</span><br><span class="line">- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler &#123;</span><br><span class="line">    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@&quot;提示&quot; message:message preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line">    [alertController addAction:[UIAlertAction actionWithTitle:@&quot;确定&quot; style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        completionHandler(YES);</span><br><span class="line">    &#125;]];</span><br><span class="line">    [alertController addAction:[UIAlertAction actionWithTitle:@&quot;取消&quot; style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        completionHandler(NO);</span><br><span class="line">    &#125;]];</span><br><span class="line">    [self presentViewController:alertController animated:YES completion:nil];</span><br><span class="line">&#125;</span><br><span class="line">//webview有prompt弹框时调用</span><br><span class="line">- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler &#123;</span><br><span class="line">    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:prompt message:nil preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line">    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) &#123;</span><br><span class="line">        textField.placeholder = defaultText;</span><br><span class="line">    &#125;];</span><br><span class="line">    [alertController addAction:[UIAlertAction actionWithTitle:@&quot;确定&quot; style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        UITextField *textFiled = alertController.textFields.firstObject;</span><br><span class="line">        completionHandler(textFiled.text);</span><br><span class="line">    &#125;]];</span><br><span class="line">    [alertController addAction:[UIAlertAction actionWithTitle:@&quot;取消&quot; style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        completionHandler(nil);</span><br><span class="line">    &#125;]];</span><br><span class="line">    [self presentViewController:alertController animated:YES completion:nil];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h1><p><strong>页面样式问题、内存消耗过大导致白屏问题、goBack刷新、以及内嵌视频播放等本文就不打算展开叙述了，因为相关解决Google一下，你就知道。</strong><br><a href="https://mp.weixin.qq.com/s/rhYKLIbXOsUJC_n6dt9UfA" target="_blank" rel="noopener">推荐文章</a></p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>上述主要说了WKWebView的几个重要改动以及严重的不足，并提供了相应的解决方案，更多的是希望可以发散思维，寻找不同的突破口以及尝试。因为如果只是要实现页面缓存，包括离线缓存，其实是不需要这么折腾的…</p>
+<h1 id="柳暗花明又一村"><a href="#柳暗花明又一村" class="headerlink" title="柳暗花明又一村"></a>柳暗花明又一村</h1><p><strong>离线缓存的其他方案</strong></p>
+<h3 id="manifest"><a href="#manifest" class="headerlink" title="manifest"></a>manifest</h3><p>manifest 属性规定文档的缓存 manifest 的位置。<br>HTML5 引入了应用程序缓存，这意味着 Web 应用程序可以被缓存，然后在无互联网连接的时候进行访问。</p>
+<ol>
+<li>离线浏览 - 用户可以在离线时使用应用程序</li>
+<li>快速 - 缓存的资源可以更快地加载</li>
+<li>减少服务器加载 - 浏览器只从服务器上下载已更新/已更改的资源<br>这是来自官方描述：<a href="http://www.runoob.com/tags/att-html-manifest.html" target="_blank" rel="noopener">manifest定义</a><br>后续我们也准备换成这种方案来处理，这样一来缓存所有逻辑都可以交给h5处理了，想想真是美滋滋。  </li>
+</ol>
+<h3 id="PWA：Progressive-Web-App"><a href="#PWA：Progressive-Web-App" class="headerlink" title="PWA：Progressive Web App"></a>PWA：Progressive Web App</h3><p><a href="https://developers.google.com/web/progressive-web-apps/" target="_blank" rel="noopener">PWA官网(需要梯子😶)</a><br>这个只能作为了解了，毕竟太前沿的技术还没有普及。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/15/推演https的安全机制/" rel="next" title="推演https的安全机制">
+                <i class="fa fa-chevron-left"></i> 推演https的安全机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars1.githubusercontent.com/u/8272390?s=400&u=bbaa08ebea7648f5f5e56559bea1db50cc78d4ca&v=4avatar"
+                alt="MrLeoZou" />
+            
+              <p class="site-author-name" itemprop="name">MrLeoZou</p>
+              <p class="site-description motion-element" itemprop="description">时间真是不够用呐~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/MrLeoZou" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://www.jianshu.com/u/651e24c3a2de" target="_blank" title="简书">
+                    
+                      <i class="fa fa-fw fa-book"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/Leo_zzp" target="_blank" title="Weibo">
+                    
+                      <i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#WKWebview的坊间传闻"><span class="nav-number">1.</span> <span class="nav-text">WKWebview的坊间传闻</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WKWebView几个tips"><span class="nav-number">2.</span> <span class="nav-text">WKWebView几个tips</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#title"><span class="nav-number">2.0.1.</span> <span class="nav-text">title</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#estimatedProgress"><span class="nav-number">2.0.2.</span> <span class="nav-text">estimatedProgress</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与原生JS交互变化"><span class="nav-number">2.0.3.</span> <span class="nav-text">与原生JS交互变化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cookie丢失"><span class="nav-number">3.</span> <span class="nav-text">cookie丢失</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie的存储"><span class="nav-number">3.0.1.</span> <span class="nav-text">cookie的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#丢失原因"><span class="nav-number">3.0.2.</span> <span class="nav-text">丢失原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">3.0.3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决首次请求cookie丢失"><span class="nav-number">3.0.3.1.</span> <span class="nav-text">解决首次请求cookie丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决后续请求cookie丢失"><span class="nav-number">3.0.3.2.</span> <span class="nav-text">解决后续请求cookie丢失</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSURLProtocol不可用"><span class="nav-number">4.</span> <span class="nav-text">NSURLProtocol不可用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ATS支持不足"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">ATS支持不足</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax发起的POST请求丢失body"><span class="nav-number">4.0.0.2.</span> <span class="nav-text">ajax发起的POST请求丢失body</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#alert导致crash"><span class="nav-number">5.</span> <span class="nav-text">alert导致crash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他问题"><span class="nav-number">6.</span> <span class="nav-text">其他问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#柳暗花明又一村"><span class="nav-number">8.</span> <span class="nav-text">柳暗花明又一村</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#manifest"><span class="nav-number">8.0.1.</span> <span class="nav-text">manifest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWA：Progressive-Web-App"><span class="nav-number">8.0.2.</span> <span class="nav-text">PWA：Progressive Web App</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-bath" aria-hidden="true"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MrLeoZou</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://MrLeoZou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/03/10/WKWebView的填坑之路/';
+          this.page.identifier = '2018/03/10/WKWebView的填坑之路/';
+          this.page.title = 'WKWebView的填坑之路';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://MrLeoZou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("R1f7SJR0SIun1yWOd6SCpg9w-gzGzoHsz", "mx6hbdneK5mrzGgJxzyfnzRL");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

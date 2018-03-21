@@ -81,18 +81,28 @@
 
 
 
-<meta name="description" content="摘要@property是什么众所周知，在iOS开发中，@property是用来声明属性的，默认会自动创建该属性的存储器以及带下划线的成员变量。对于紧随其后的那些关键字也是烂熟于心，信手拈来，但是会用并不代表知道为什么要这样用。 小Tip属性和变量在项目中常见的两种写法：12345678910@interface Tes">
+<meta name="description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="理解@property使用的关键字">
-<meta property="og:url" content="http://yoursite.com/2017/12/11/理解-property使用的关键字/index.html">
+<meta property="og:title" content="推演https的安全机制">
+<meta property="og:url" content="http://yoursite.com/2018/02/15/推演https的安全机制/index.html">
 <meta property="og:site_name" content="MrLeoZou">
-<meta property="og:description" content="摘要@property是什么众所周知，在iOS开发中，@property是用来声明属性的，默认会自动创建该属性的存储器以及带下划线的成员变量。对于紧随其后的那些关键字也是烂熟于心，信手拈来，但是会用并不代表知道为什么要这样用。 小Tip属性和变量在项目中常见的两种写法：12345678910@interface Test : NSObject&amp;#123;// 声明变量NSString *testN">
+<meta property="og:description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。 有了目标，该如何实现呢？很显然会想到加密，这也是目前行业">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-11T03:07:12.426Z">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/01.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/02.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/03.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/04.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/05.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/06.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/07.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/08.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/09.png">
+<meta property="og:updated_time" content="2018-03-21T08:43:45.612Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="理解@property使用的关键字">
-<meta name="twitter:description" content="摘要@property是什么众所周知，在iOS开发中，@property是用来声明属性的，默认会自动创建该属性的存储器以及带下划线的成员变量。对于紧随其后的那些关键字也是烂熟于心，信手拈来，但是会用并不代表知道为什么要这样用。 小Tip属性和变量在项目中常见的两种写法：12345678910@interface Test : NSObject&amp;#123;// 声明变量NSString *testN">
+<meta name="twitter:title" content="推演https的安全机制">
+<meta name="twitter:description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。 有了目标，该如何实现呢？很显然会想到加密，这也是目前行业">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/01.png">
 
 
 
@@ -122,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/12/11/理解-property使用的关键字/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/15/推演https的安全机制/"/>
 
 
 
 
 
-  <title>理解@property使用的关键字 | MrLeoZou</title>
+  <title>推演https的安全机制 | MrLeoZou</title>
   
 
 
@@ -293,7 +303,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/理解-property使用的关键字/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/15/推演https的安全机制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MrLeoZou">
@@ -310,7 +320,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">理解@property使用的关键字</h1>
+          <h1 class="post-title" itemprop="name headline">推演https的安全机制</h1>
         
 
         <div class="post-meta">
@@ -322,8 +332,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T10:57:43+08:00">
-                2017-12-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-15T22:15:05+08:00">
+                2018-02-15
               </time>
             
 
@@ -341,9 +351,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/11/理解-property使用的关键字/#comments" itemprop="discussionUrl">
+                <a href="/2018/02/15/推演https的安全机制/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/12/11/理解-property使用的关键字/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/02/15/推演https的安全机制/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +361,7 @@
 
           
           
-             <span id="/2017/12/11/理解-property使用的关键字/" class="leancloud_visitors" data-flag-title="理解@property使用的关键字">
+             <span id="/2018/02/15/推演https的安全机制/" class="leancloud_visitors" data-flag-title="推演https的安全机制">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -376,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,419
+                  2,816
                 </span>
               
 
@@ -413,75 +423,31 @@
       
 
       
-        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>@property是什么<br>众所周知，在iOS开发中，@property是用来声明属性的，默认会自动创建该属性的存储器以及带下划线的成员变量。对于紧随其后的那些关键字也是烂熟于心，信手拈来，但是会用并不代表知道为什么要这样用。</p>
-<h2 id="小Tip"><a href="#小Tip" class="headerlink" title="小Tip"></a>小Tip</h2><h3 id="属性和变量"><a href="#属性和变量" class="headerlink" title="属性和变量"></a>属性和变量</h3><p>在项目中常见的两种写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@interface Test : NSObject</span><br><span class="line">&#123;</span><br><span class="line">// 声明变量</span><br><span class="line">NSString *testName;</span><br><span class="line">NSString *testType;</span><br><span class="line">&#125;</span><br><span class="line">// 声明属性</span><br><span class="line">@property(nonatomic,strong) NSString *testName;</span><br><span class="line">@property(nonatomic,strong) NSString *testType;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<p>以上两种声明的区别在于：<br>（1）声明变量时没有使用到@property，而声明属性时需要用到<br>（2）使用@property声明的属性，默认会自动生成属性的存取器，也就是getter/setter方法，以及带下划线的成员变量；而单独声明变量则没有前者特性。</p>
-<hr>
-<h2 id="property的关键字"><a href="#property的关键字" class="headerlink" title="@property的关键字"></a>@property的关键字</h2><blockquote>
-<p>从大体上我们可以归为三类：原子性，存取控制，内存管理</p>
-</blockquote>
-<h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><h4 id="atomic-nonatomic"><a href="#atomic-nonatomic" class="headerlink" title="atomic | nonatomic"></a>atomic | nonatomic</h4><p><strong>1. atomic</strong>:原子性，同一时刻只能有一个线程能访问该属性，在进行属性的get/set时候是安全的。也就是说atomic只能在一定程度上保证线程安全，并不是一定的线程安全。</p>
-<blockquote>
-<p>因为原子属性是保证同一时刻只能有一个线程操作该对象，但是不能保证在一次完整的set -&gt; get操作过程中，只有同一个线程操作。比如，线程A先set该属性，完成后线程B也set了该属性，改变了原来的值，在B完成后A再进行get操作，此时会发现属性的值已经不是当初A线程set进去的，因此会有问题。另外一种更极端的情况是在A线程set完成，B线程进入把该对象release了，等A线程再来访问时就会导致crash。所以想要真正的线程安全，还是需要使用到加锁来实现，具体实现就不在本文的讨论范围了。</p>
-</blockquote>
-<p><strong> 2. nonatomic</strong> :非原子性，顾名思义也就是和atomic含义是相反的。不保证线程安全，可以多个线程同时访问。</p>
-<blockquote>
-<p>小结：在日常开发中，我们绝大部分时候都是使用nonatomic，最主要的原因是nonatomic效率比atomic高很多（坊间传闻约快20倍，具体没有去验证过），因此，在明确只有一个线程访问的情况下推荐使用nonatomic。但是，并不是说任何时候都是用nonatomic，具体要根据实际情况，如果某属性确实存在线程不安全的问题，还是要考虑使用atomic的。</p>
-</blockquote>
-<hr>
-<h3 id="存取控制"><a href="#存取控制" class="headerlink" title="存取控制"></a>存取控制</h3><h4 id="readwrite-readonly-writeonly"><a href="#readwrite-readonly-writeonly" class="headerlink" title="readwrite | readonly | writeonly"></a>readwrite | readonly | writeonly</h4><ol>
-<li><p>readwrite：可读可写，默认值。同时拥有getter和setter方法</p>
-</li>
-<li><p>readonly：可读不可写，只有getter没有setter方法</p>
-</li>
-<li><p>writeonly：可写不可读，只有setter没有getter方法，很少使用</p>
-</li>
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。</p>
+<h2 id="安全通信"><a href="#安全通信" class="headerlink" title="安全通信"></a>安全通信</h2><ol>
+<li>首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。</li>
+<li>有了目标，该如何实现呢？很显然会想到加密，这也是目前行业内比较通用的解决方案。</li>
+<li>不过加密算法如此之多，我们要怎么考量和选择呢？回到需求，我们需要的是双向安全，显然非对称加密不符合，因为它是单向安全的，因此我们很快锁定对称加密，毕竟也是通俗易懂接地气的。关于对称和非对称加密算法，不清楚的就需要自己先去了解下了，否则可能会影响往下的阅读和理解。</li>
+<li>至此，好像我们的需求已经得到解决，这篇博文也就到此为止了。总感觉太奇怪了，毕竟我们不是这么短小的人🙄。</li>
 </ol>
-<p>相对来说，这几个关键字是很简单也容易理解的。</p>
-<hr>
-<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><h4 id="strong-weak-unsafe-unretained-assign-retain-copy"><a href="#strong-weak-unsafe-unretained-assign-retain-copy" class="headerlink" title="strong | weak | unsafe_unretained | assign | retain | copy"></a>strong | weak | unsafe_unretained | assign | retain | copy</h4><p><strong>1. assign:</strong><br>（1）默认值，用于修饰值类型（基本数据类型），如：int，float，double，CGFloat，NSInteger等。另外就是不存在所有权关系的对象，如：delegate。<br>（2）assign修饰的属性不牵涉内存管理，不会被引用计数器管理。</p>
-<p><strong>2. retain:</strong><br>  ARC后用于取代retain的，作用等同于retain。表示实例变量对传入的对象要有所有权关系，也就是强引用。</p>
-<p><strong>3. strong:</strong><br>ARC后用于取代retain的，作用等同于retain。表示实例变量对传入的对象要有所有权关系，也就是强引用。</p>
-<p><strong>4. weak:</strong><br>针对对象类型，在setter方法中，不会对传入的对象执行引用计数器+1的操作。也就是对传入的对象没有所有权，是弱引用。另外当传入的对象引用计数器为0，也就是被释放后，用weak声明的实例变量会指向nil，即空对象。</p>
-<p><strong>5. unsafe_unretained:</strong><br>（1）从字面上来看，我们可以拆分成两部分来理解，unretained和retain相反，也就是和strong相反，因此等同于weak，其实也是用在iOS5之前替代weak使用的<br>（2）unsafe，不安全的，如上所述等同于weak的话那应该是安全的，这里不安全的是指当传入的对象被释放后，使用unsafe_unretained修饰的变量是不知道的，也不会像weak一样指向nil，所以此时访问可能会引起crash。因此，总结来说unsafe_unretained作用是等同于weak，但是是不安全的。</p>
-<p><strong>6. copy:</strong>在不同情况下会有不同的操作<br>（1）传入的对象是不可变的，如NSString对象<br>  A. 强引用传进来的对象，使其引用计数器+1，等同于strong<br>  B. 该变量指向地址和传入对象的指向地址一致<br>（2）传入对象是可变对象，如NSMutableString对象<br>A. 拷贝一份传入对象，生成一个新的对象，值等同于传入对象值，但是不会强引用传入对象<br>B. 此时变量指向地址就是上述生成的新对象地址，与传入对象地址无关，也不相同；因此，传入对象改变也不会影响到当前变量的值，两者已经是不相干的两个对象了。</p>
-<blockquote>
-<p>关于copy更多深入分析 <a href="http://southpeak.github.io/2015/05/10/ios-techset-1/" target="_blank" rel="noopener">请参考此文</a></p>
-</blockquote>
-<hr>
-<h3 id="几个常见问题"><a href="#几个常见问题" class="headerlink" title="几个常见问题"></a>几个常见问题</h3><h4 id="unsafe-unretained、weak、assign-的区别？"><a href="#unsafe-unretained、weak、assign-的区别？" class="headerlink" title="unsafe_unretained、weak、assign 的区别？"></a>unsafe_unretained、weak、assign 的区别？</h4><ol>
-<li>三者都不会对引用计数器进行操作，都不是对象的拥有者</li>
-<li>unsafe_unretained作用等同于weak，但其实不安全的，不会对传入的对象做赋nil处理，可能产生野指针。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@property(nonatomic,strong) NSString *strongString;</span><br><span class="line">@property(nonatomic, unsafe_unretained) NSString *unsafe_unretainedString;</span><br><span class="line">self.strongString= [[NSStringalloc] initWithString:&quot;strongString&quot;];</span><br><span class="line">self.unsafe_unretainedString=self.strongString;</span><br><span class="line">self.strongString=nil;</span><br><span class="line">NSLog(@&quot;unsafe_unretainedString == %@&quot;,self.unsafe_unretainedString);</span><br></pre></td></tr></table></figure>
-</li>
+<h2 id="一对多的问题"><a href="#一对多的问题" class="headerlink" title="一对多的问题"></a>一对多的问题</h2><p>在上文中，我们愉快地解决了通信两端内容加密的需求，但忽略了一个重要的事实：现实中客户端和服务端并不是一对一的关系，往往都是一对多的关系，如果使用同一套对称加密算法，则如下图：<br><img src="/2018/02/15/推演https的安全机制/01.png" alt="图01"><br>这样一来，其实也就完全失去了加密的意义，因为大家用的都是同一套算法，可以互相解密了。因此，我们需要针对不同的客户端，协商不同的对称加密算法，保证客户端之间互相不能解密，如下图：<br><img src="/2018/02/15/推演https的安全机制/02.png" alt="图02"><br>那具体协商过程是怎样的呢？自然是通过服务器来告知客户端使用何种加密算法了。</p>
+<h2 id="引入新的问题"><a href="#引入新的问题" class="headerlink" title="引入新的问题"></a>引入新的问题</h2><p>至此，我们已经知道两端通信安全需要使用对称加密来加密传输内容，但不同的客户端需要使用不同的对称加密算法，算法的协商过程由服务端告知客户端，那么问题来了：协商的过程也是不安全的，可能会被中间人拦截，也需要加密，应该怎么处理呢？</p>
+<ol>
+<li>首先想到的可能是对协商过程再加密就好了，但是，对协商过程的加密本身还是没有加密…，发现进入死循环了</li>
+<li>为了解决这个死循环，我们需要引入一个新的方式，其实前面也提到过的：非对称加密</li>
 </ol>
-<blockquote>
-<p>这时打印unsafe_unretainedString的值时程序会crash掉。原因是strongString已经释放掉了，但是unsafe_unretainedString并不知道已被释放，所以造成了unsafe_unretainedString访问野指针的内存。</p>
-</blockquote>
-<p>3.assign用于修饰值类型或id，当被释放后如果不手动赋nil，会产生野指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@property(nonatomic,strong) NSString *strongString;</span><br><span class="line">@property(nonatomic,assign) NSString *assignString;</span><br><span class="line">self.strongString= [[NSString alloc] initWithString:&quot;strongString&quot;];</span><br><span class="line">self.assignString=self.strongString;</span><br><span class="line">self.strongString=nil;</span><br><span class="line">NSLog(@&quot;assignString == %@&quot;,self.assignString);</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>assign的问题和unsafe_unretained类似，可能会产生野指针。</p>
-</blockquote>
-<p>4.weak修饰的变量，当传入的对象被释放后，会自动指向nil，不会产生野指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@property(nonatomic,strong) NSString *strongString;</span><br><span class="line">@property(nonatomic,weak) NSString *weakString;</span><br><span class="line">self.strongString= [[NSStringalloc] initWithString:&quot;strongString&quot;];</span><br><span class="line">self.weakString=self.strongString;</span><br><span class="line">self.strongString=nil;</span><br><span class="line">NSLog(@&quot;weakString == %@&quot;,self.weakString);</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>由于 self.strongString与self.weakString指向同一地址，且self.weakString没有retain内存地址，而self.strongString =nil释放 了内存，所以self.strongString为nil。由于self.weakString声明为weak的指针，指针指向的地址一旦被释放，这些指针都将被赋值为nil。这样的好处能有效的防止野指针。</p>
-</blockquote>
-<hr>
-<h4 id="delegate使用assign还是weak，为什么？"><a href="#delegate使用assign还是weak，为什么？" class="headerlink" title="delegate使用assign还是weak，为什么？"></a>delegate使用assign还是weak，为什么？</h4><ol>
-<li>理论上来说，两者都是可以使用的，其一，都不会操作delegate的引用计数器，不是强引用对象。其二，在实际开发中，几乎所有场景下，delegate所指向的对象A的生存期都会被delegate变量B自身的生存期覆盖，也就是说A在使用B的过程中，B都是存在的，因此使用assign也不会有问题。</li>
-<li>但是，由于assign不会处理delegate被释放后的情况，上述的也只是大部分情况，不排除可能会出现delegate被释放了而A还在使用，产生野指针错误，而weak正好会处理这个情况，因此我们一般使用weak来修饰delegate，会更加安全</li>
+<h2 id="对协商过程加密"><a href="#对协商过程加密" class="headerlink" title="对协商过程加密"></a>对协商过程加密</h2><p>前面说到我们需要引入新的加密方式，因为对称加密会引发死循环的问题，那我们看下为什么要选择非对称加密？<br>非对称加密的特点：<strong>私钥加密后的密文，只要是公钥都可以解密；公钥加密后的密文，只有私钥可以解密；私钥只有一个人持有，而公钥可以发给所有人持有</strong><br><img src="/2018/02/15/推演https的安全机制/03.png" alt="图03"><br><strong>非对称加密是单向安全的，也就是说客户端向服务端方向是安全的，反之则是不安全的。</strong><br>至此，我们确定了使用非对称加密来加密协商过程，结合前文内容，我们知道目前需要使用到对称加密和非对称加密两种算法，事实上https也确实如此。</p>
+<h2 id="具体怎么协商"><a href="#具体怎么协商" class="headerlink" title="具体怎么协商"></a>具体怎么协商</h2><p>我们需要对不同的客户端使用不同的对称加密算法，同时也不能让除两端之外的第3人知道，怎么保证足够安全和算法不确定性？<br><strong>使用随机数：使用随机数来生成对称加密算法，并且只有在交互的那一刻才能真正确定，这也就是为什么https在协议握手阶段会有这么多的随机数的原因了。</strong></p>
+<h2 id="公钥从哪里来"><a href="#公钥从哪里来" class="headerlink" title="公钥从哪里来"></a>公钥从哪里来</h2><p>前面我们已经得出结论：使用非对称加密算法对协商过程加密，并且客户端持有公钥，服务端持有唯一的私钥。<br>这里出现了一个新的问题：客户端的公钥从哪里来？自然是服务端下发的，总不可能每个客户端/浏览器都本地提前保存一个服务端公钥吧，想想也不可能的。<br><strong><em>服务端下发？</em></strong><br>那岂不是又会出现传输不安全的问题嘛？难道这个下发过程又要加密，因为可能被篡改，这感觉又绕回去了最开始的死循环了…(懵逼脸)。<br><img src="/2018/02/15/推演https的安全机制/04.png" alt="图04"><br>我们设想一下，如果有一个全球公认的机构可以来帮我们下发公钥，因为大家对这些机构都是信任的，那客户端只需要判断是否是这些机构下发的，不就可以避免被中间人篡改的问题了，也就不需要循环加密了。<br>这就引出了证书机构和数字证书的概念了。<br><strong>我们不能直接将服务器的公钥传递给客户端，而是第三方机构使用它的私钥对我们的公钥进行加密后，再传给客户端。客户端再使用第三方机构的公钥进行解密。假如被中间人篡改，那客户端的三方机构公钥是不能正常解密的</strong><br>看下简化版的数字证书：（隐藏了其他信息的）<br><img src="/2018/02/15/推演https的安全机制/05.png" alt="图05"><br>再看下使用数字证书后的交互图：<br><img src="/2018/02/15/推演https的安全机制/06.png" alt="图06"><br>至此，我们已经解决了非对称加密公钥的安全获取，也就打通了使用非对称加密保障堆成加密算法的协商过程这一整套流程，看起来一切都是那么美好。</p>
+<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>如果有了解过https的基本都知道还有一个重要的概念：数字签名。但是在上述的推演过程中我们并没有出现过，是不是遗漏了什么呢？<br>回到现实场景，我们确实遗漏了一点：第三方机构并不是只为一个公司制作证书的，机构和公司应该是一对多的关系，也就是说机构也会给中间人的公司发放证书。因此中间人还是可以对你的证书进行篡改，此时客户端并不能区分证书是来自你公司还是中间人，因为不论是你的证书还是中间人的，都是同一个三方机构颁发，客户端都可以正常解密。<br><img src="/2018/02/15/推演https的安全机制/07.png" alt="图07">  </p>
+<h3 id="数字签名：解决同一机构颁发的证书被篡改的问题"><a href="#数字签名：解决同一机构颁发的证书被篡改的问题" class="headerlink" title="数字签名：解决同一机构颁发的证书被篡改的问题"></a>数字签名：解决同一机构颁发的证书被篡改的问题</h3><ol>
+<li>首先解决一个问题：校验同一机构颁发的不同证书的工作应该放在哪里？服务端还是客户端？显然只能是客户端了，因为被篡改不可能发生在服务端，而是在服务端发送证书给客户端过程中，所以只能是客户端校验。</li>
+<li>至于客户端如何验证，需要引入证书的另一个重要属性：证书编号，这就好比毕业证书的编号一样，是一个唯一标识。</li>
+<li><strong>更重要的是，证书上不仅仅带有证书编号，还会写着如何根据证书的内容生成证书编号的方法，可以简单理解为一个MD5值。因此，客户端拿到这些信息后，在本地根据证书的方法生成一个证书编号，然后与证书上的编号进行比对，验证证书信息是否被篡改。同时，为了保证证书编号不被篡改，需要先使用机构的私钥加密后传递给客户端。（小提问：假如不做加密，直接传递MD5生成的证书编号，可能会有什么问题？）</strong></li>
+<li>补充一点，上述情形下如果发生证书被中间人篡改，而且中间人使用同一个机构颁发的证书，那么客户端收到中间人的证书和其中包含的证书编号以及域名，服务器公钥等其他信息。然后按照证书的方法生成证书编号，肯定是和证书中的编号一致的，那岂不是推翻了我们刚刚说的结论？其实是因为我们前面只说了最重要的一点，比对证书编号；事实上还需要比对其他信息，包括域名对比等，这样结合起来就是全面的校验了。<br><img src="/2018/02/15/推演https的安全机制/08.png" alt="图08"> </li>
 </ol>
-<hr>
-<h4 id="self对象是被strong，weak还是其他关键字修饰的？"><a href="#self对象是被strong，weak还是其他关键字修饰的？" class="headerlink" title="self对象是被strong，weak还是其他关键字修饰的？"></a>self对象是被strong，weak还是其他关键字修饰的？</h4><blockquote>
-<p>在实际开发中，我们随处可见[self testMothod];这种写法，但是真正去思考self的生命周期和内存管理的估计很少。试问假如self在方法执行的过程中被释放了，会发生什么？</p>
-</blockquote>
-<p>通过 <a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#self" target="_blank" rel="noopener">查阅clang文档</a>，我们发现了关于self的解释：</p>
-<blockquote>
-<p>The self parameter variable of an Objective-C method is never actually retained by the implementation. It is undefined behavior, or at least dangerous, to cause an object to be deallocated during a message send to that object.<br>To make this safe, for Objective-C instance methods self is implicitly const unless the method is in the init family. Further, self is always implicitly const within a class method.<br>Rationale<br>The cost of retaining self in all methods was found to be prohibitive, as it tends to be live across calls, preventing the optimizer from proving that the retain and release are unnecessary — for good reason, as it’s quite possible in theory to cause an object to be deallocated during its execution without this retain and release. Since it’s extremely uncommon to actually do so, even unintentionally, and since there’s no natural way for the programmer to remove this retain/release pair otherwise (as there is for other parameters by, say, making the variable __unsafe_unretained), we chose to make this optimizing assumption and shift some amount of risk to the user.</p>
-</blockquote>
-<p>上述，self既不是strong也不是weak，而是被unsafe_unretained修饰的，因此要求我们调用的时候保证self是存在的，否则可能会引起无法预料的crash。这样设计的原因是因为在对象方法调用时，我们一定是会把self传递进去，并且在绝大部分情况下做为调用方，我们不会把self释放掉，如果为了处理不到1%情况下的异常而在方法执行时增加retain和release进行保护的话，会对性能有重大影响，因此ARC设计也就没有帮我们处理，需要调用方自行保证self的存在。</p>
-<blockquote>
-<p>以上便是对iOS常用的property后关键字的分析理解。另外，关于copy和block的使用和探讨将在后续的文章进行，这块较复杂内容也较多。</p>
-</blockquote>
+<h2 id="最后的问题"><a href="#最后的问题" class="headerlink" title="最后的问题"></a>最后的问题</h2><p>至此，我们还留有最后一手，也是本文的最后一个问题，也就不卖关子了。<br><strong>三方机构的证书我们如何得到？</strong><br>真相只有一个：浏览器和操作系统都会维护一个权威的第三方机构列表（包括它们的公钥）。因为客户端接收到的证书中会写有颁发机构，客户端就根据这个颁发机构的值在本地找相应的公钥。<br><strong>三方机构如何颁布证书给服务器？</strong><br>这个就比较简单了，随便从网上给大家搬运一个流程。拿到证书后，剩下就是配置到公司服务器了。<br><img src="/2018/02/15/推演https的安全机制/09.png" alt="图09"><br><strong>为何不直接使用非对称加密传输？</strong><br>在引入证书以后，其实两端已经可以使用该非对称加密算法进行通信了，但我们还是坚持要协商出一个对称加密算法，并最终以该算法来做传输的加解密，原因很简单，文章开头也说到了，非对称加密只是单向安全的！</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过上文的推演，我们发现在真正建立安全传输之前，已经需要做非常多的工作（SSL/TLS）,目的就是为了协商出一个对称加密算法，在此之后就可以使用该加密算法愉快地传输和加密解密了。<br>这其实也可以反映出为什么https对比http多了这么多交互，效率也下降了不少，一切都是为了安全！<br><strong>总结来说：为了保证两端安全传输，需要对传输内容进行对称加密；但是由于不同客户端需要协商不同的对称加密算法，协商的过程需要使用非对称加密；非对称加密中服务端需要给客户端下发公钥，此过程也是不安全的，需要使用机构的三方私钥加密，也就是数字证书，之后客户端通过保存在本地的机构公钥对证书进行解密，校验等，最后获取到服务器下发的公钥，并进行上述的协商过程。</strong>（就酱吧，好累(╯﹏╰)）。</p>
 
       
     </div>
@@ -512,8 +478,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/11/iOS开发中的各种锁/" rel="next" title="iOS开发中的各种锁">
-                <i class="fa fa-chevron-left"></i> iOS开发中的各种锁
+              <a href="/2017/12/11/深入理解RunLoop/" rel="next" title="深入理解RunLoop">
+                <i class="fa fa-chevron-left"></i> 深入理解RunLoop
               </a>
             
           </div>
@@ -522,8 +488,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/12/11/深入理解RunLoop/" rel="prev" title="深入理解RunLoop">
-                深入理解RunLoop <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/10/WKWebView的填坑之路/" rel="prev" title="WKWebView的填坑之路">
+                WKWebView的填坑之路 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -690,7 +656,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小Tip"><span class="nav-number">2.</span> <span class="nav-text">小Tip</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性和变量"><span class="nav-number">2.1.</span> <span class="nav-text">属性和变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#property的关键字"><span class="nav-number">3.</span> <span class="nav-text">@property的关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子性"><span class="nav-number">3.1.</span> <span class="nav-text">原子性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#atomic-nonatomic"><span class="nav-number">3.1.1.</span> <span class="nav-text">atomic | nonatomic</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存取控制"><span class="nav-number">3.2.</span> <span class="nav-text">存取控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#readwrite-readonly-writeonly"><span class="nav-number">3.2.1.</span> <span class="nav-text">readwrite | readonly | writeonly</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理"><span class="nav-number">3.3.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#strong-weak-unsafe-unretained-assign-retain-copy"><span class="nav-number">3.3.1.</span> <span class="nav-text">strong | weak | unsafe_unretained | assign | retain | copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个常见问题"><span class="nav-number">3.4.</span> <span class="nav-text">几个常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unsafe-unretained、weak、assign-的区别？"><span class="nav-number">3.4.1.</span> <span class="nav-text">unsafe_unretained、weak、assign 的区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#delegate使用assign还是weak，为什么？"><span class="nav-number">3.4.2.</span> <span class="nav-text">delegate使用assign还是weak，为什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#self对象是被strong，weak还是其他关键字修饰的？"><span class="nav-number">3.4.3.</span> <span class="nav-text">self对象是被strong，weak还是其他关键字修饰的？</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全通信"><span class="nav-number">2.</span> <span class="nav-text">安全通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一对多的问题"><span class="nav-number">3.</span> <span class="nav-text">一对多的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入新的问题"><span class="nav-number">4.</span> <span class="nav-text">引入新的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对协商过程加密"><span class="nav-number">5.</span> <span class="nav-text">对协商过程加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体怎么协商"><span class="nav-number">6.</span> <span class="nav-text">具体怎么协商</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公钥从哪里来"><span class="nav-number">7.</span> <span class="nav-text">公钥从哪里来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字签名"><span class="nav-number">8.</span> <span class="nav-text">数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数字签名：解决同一机构颁发的证书被篡改的问题"><span class="nav-number">8.1.</span> <span class="nav-text">数字签名：解决同一机构颁发的证书被篡改的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后的问题"><span class="nav-number">9.</span> <span class="nav-text">最后的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
@@ -860,9 +826,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2017/12/11/理解-property使用的关键字/';
-          this.page.identifier = '2017/12/11/理解-property使用的关键字/';
-          this.page.title = '理解@property使用的关键字';
+          this.page.url = 'http://yoursite.com/2018/02/15/推演https的安全机制/';
+          this.page.identifier = '2018/02/15/推演https的安全机制/';
+          this.page.title = '推演https的安全机制';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://MrLeoZou.disqus.com/embed.js';
