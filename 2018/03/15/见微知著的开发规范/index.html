@@ -81,28 +81,20 @@
 
 
 
-<meta name="description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通">
+<meta name="description" content="本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。 官方规范首先贴出Apple关于cocoa编码的规范，相信这个大家都不应该有争议吧。Introduction to Co">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="推演https的安全机制">
-<meta property="og:url" content="http://yoursite.com/2018/02/15/推演https的安全机制/index.html">
+<meta property="og:title" content="见微知著的开发规范">
+<meta property="og:url" content="http://yoursite.com/2018/03/15/见微知著的开发规范/index.html">
 <meta property="og:site_name" content="MrLeoZou">
-<meta property="og:description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。 有了目标，该如何实现呢？很显然会想到加密，这也是目前行业">
+<meta property="og:description" content="本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。 官方规范首先贴出Apple关于cocoa编码的规范，相信这个大家都不应该有争议吧。Introduction to Coding Guidelines for Cocoa   这也是最基础最细致的规范">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/01.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/02.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/03.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/04.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/05.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/06.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/07.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/08.png">
-<meta property="og:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/09.png">
-<meta property="og:updated_time" content="2018-03-21T08:43:45.612Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/15/见微知著的开发规范/01.png">
+<meta property="og:updated_time" content="2018-03-23T04:20:35.567Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="推演https的安全机制">
-<meta name="twitter:description" content="摘要本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。 安全通信 首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。 有了目标，该如何实现呢？很显然会想到加密，这也是目前行业">
-<meta name="twitter:image" content="http://yoursite.com/2018/02/15/推演https的安全机制/01.png">
+<meta name="twitter:title" content="见微知著的开发规范">
+<meta name="twitter:description" content="本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。 官方规范首先贴出Apple关于cocoa编码的规范，相信这个大家都不应该有争议吧。Introduction to Coding Guidelines for Cocoa   这也是最基础最细致的规范">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/15/见微知著的开发规范/01.png">
 
 
 
@@ -132,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/15/推演https的安全机制/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/15/见微知著的开发规范/"/>
 
 
 
 
 
-  <title>推演https的安全机制 | MrLeoZou</title>
+  <title>见微知著的开发规范 | MrLeoZou</title>
   
 
 
@@ -303,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/15/推演https的安全机制/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/15/见微知著的开发规范/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MrLeoZou">
@@ -320,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">推演https的安全机制</h1>
+          <h1 class="post-title" itemprop="name headline">见微知著的开发规范</h1>
         
 
         <div class="post-meta">
@@ -332,8 +324,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-15T22:15:05+08:00">
-                2018-02-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T21:46:55+08:00">
+                2018-03-15
               </time>
             
 
@@ -351,9 +343,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/02/15/推演https的安全机制/#comments" itemprop="discussionUrl">
+                <a href="/2018/03/15/见微知著的开发规范/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/02/15/推演https的安全机制/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/03/15/见微知著的开发规范/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -361,7 +353,7 @@
 
           
           
-             <span id="/2018/02/15/推演https的安全机制/" class="leancloud_visitors" data-flag-title="推演https的安全机制">
+             <span id="/2018/03/15/见微知著的开发规范/" class="leancloud_visitors" data-flag-title="见微知著的开发规范">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -386,7 +378,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,816
+                  1,309
                 </span>
               
 
@@ -402,7 +394,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  9
+                  5
                 </span>
               
             </div>
@@ -423,31 +415,33 @@
       
 
       
-        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文将尝试使用一个反向推演的方式，从抛出问题，解决问题，出现新问题，解决新问题的思路，环环相扣，最后推演出https如何实现安全通信的，不过仅代表个人的理解，毕竟我一直也没看完《图解https》。</p>
-<h2 id="安全通信"><a href="#安全通信" class="headerlink" title="安全通信"></a>安全通信</h2><ol>
-<li>首先我们必须有一个最基本的需求：保证两端（客户端和服务端）的通信是安全的，也就是两者之间的通信内容有且只有通信双方能够获取并解析。</li>
-<li>有了目标，该如何实现呢？很显然会想到加密，这也是目前行业内比较通用的解决方案。</li>
-<li>不过加密算法如此之多，我们要怎么考量和选择呢？回到需求，我们需要的是双向安全，显然非对称加密不符合，因为它是单向安全的，因此我们很快锁定对称加密，毕竟也是通俗易懂接地气的。关于对称和非对称加密算法，不清楚的就需要自己先去了解下了，否则可能会影响往下的阅读和理解。</li>
-<li>至此，好像我们的需求已经得到解决，这篇博文也就到此为止了。总感觉太奇怪了，毕竟我们不是这么短小的人🙄。</li>
-</ol>
-<h2 id="一对多的问题"><a href="#一对多的问题" class="headerlink" title="一对多的问题"></a>一对多的问题</h2><p>在上文中，我们愉快地解决了通信两端内容加密的需求，但忽略了一个重要的事实：现实中客户端和服务端并不是一对一的关系，往往都是一对多的关系，如果使用同一套对称加密算法，则如下图：<br><img src="/2018/02/15/推演https的安全机制/01.png" alt="图01"><br>这样一来，其实也就完全失去了加密的意义，因为大家用的都是同一套算法，可以互相解密了。因此，我们需要针对不同的客户端，协商不同的对称加密算法，保证客户端之间互相不能解密，如下图：<br><img src="/2018/02/15/推演https的安全机制/02.png" alt="图02"><br>那具体协商过程是怎样的呢？自然是通过服务器来告知客户端使用何种加密算法了。</p>
-<h2 id="引入新的问题"><a href="#引入新的问题" class="headerlink" title="引入新的问题"></a>引入新的问题</h2><p>至此，我们已经知道两端通信安全需要使用对称加密来加密传输内容，但不同的客户端需要使用不同的对称加密算法，算法的协商过程由服务端告知客户端，那么问题来了：协商的过程也是不安全的，可能会被中间人拦截，也需要加密，应该怎么处理呢？</p>
+        <p>本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。</p>
+<h1 id="官方规范"><a href="#官方规范" class="headerlink" title="官方规范"></a>官方规范</h1><p>首先贴出Apple关于cocoa编码的规范，相信这个大家都不应该有争议吧。<br><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html" target="_blank" rel="noopener">Introduction to Coding Guidelines for Cocoa</a>  </p>
+<p>这也是最基础最细致的规范，其他一切规范制定都应该以此为依据，不应该违背该规范精神，总感觉是在说<code>宪法</code>。<br>如果感觉太长了，也可以参考这个：<a href="https://github.com/NYTimes/objective-c-style-guide" target="_blank" rel="noopener">编码规范</a> , 我们的规范也是参考了这个来制定的。</p>
+<h1 id="viewController的编码规范"><a href="#viewController的编码规范" class="headerlink" title="viewController的编码规范"></a>viewController的编码规范</h1><p>其实以前我并不觉得viewController有什么严格的规范，那是因为自己孤陋寡闻，后面接触了多个老旧项目后，特别是多人维护的项目，体会是越发深刻：没有规矩不成方圆，乱的一塌糊涂，同一个项目风格百变。有一个想看看不下去的痛苦，比如目前需要重构的项目😆。</p>
 <ol>
-<li>首先想到的可能是对协商过程再加密就好了，但是，对协商过程的加密本身还是没有加密…，发现进入死循环了</li>
-<li>为了解决这个死循环，我们需要引入一个新的方式，其实前面也提到过的：非对称加密</li>
+<li><p><strong>代码分块，使用#pragma mark，这一步尤其重要，而且需要制定好一套#pragma的顺序（这个顺序也是有讲究的，一般生命周期方法，事件，通知，代理/数据源，私有方法，getter和setter）当然这也是仅供参考，只是一旦定好，全部人都按照这个来。这样一来，整个项目的viewController脉络就清晰了，头是头尾是尾。</strong>  </p>
+</li>
+<li><p><strong>属性统一使用getter和setter，理由也是为了统一管理，阅读简洁。</strong></p>
+</li>
+<li><p><strong>理解控制器每个生命周期函数的意义，在合适的方法中添加合适的代码。比如viewDidLoad就做最基本的self.view的属性设置以及添加自view，不要把各种属性，控件之类的初始化或者属性设置放到这里，因为这基本是每个viewController最重要也第一眼阅读的方法，必须要力争做到简洁明了。</strong></p>
+</li>
+<li><p><strong>viewWillAppear，viewDidAppear，viewWilDisAppear，viewDidDisappear这几个方法会在不同时刻可能会频繁触发，因此不要把只需要执行一次的代码添加到这些方法中，特别是耗时好性能的代码。这个问题也是特别容易忽视的，发现老项目中总是习惯把viewDidLoad中的代码放到viewWillAppear，这显然是没有理解这些系统方法的意义。</strong></p>
+</li>
+<li><p><strong>能抽取出去的代码就尽量抽取出去，比如：避免在控制器中直接创建子空间，而是通过自定义view来引入；比如网络请求，私有方法等，可以使用分类或工具类来处理，总之尽可能给viewController减压。</strong>  </p>
+</li>
+<li><p><strong>关于view的布局，也是需要一开始约定好，使用哪种布局方式，Frame，Autolayout还是其他，已经是否使用三方框架。比如重构项目中我们约定代码布局中统一使用Masonry，这样后期不会乱，每个人编码的模块别人都很容易上手。</strong>  </p>
+</li>
 </ol>
-<h2 id="对协商过程加密"><a href="#对协商过程加密" class="headerlink" title="对协商过程加密"></a>对协商过程加密</h2><p>前面说到我们需要引入新的加密方式，因为对称加密会引发死循环的问题，那我们看下为什么要选择非对称加密？<br>非对称加密的特点：<strong>私钥加密后的密文，只要是公钥都可以解密；公钥加密后的密文，只有私钥可以解密；私钥只有一个人持有，而公钥可以发给所有人持有</strong><br><img src="/2018/02/15/推演https的安全机制/03.png" alt="图03"><br><strong>非对称加密是单向安全的，也就是说客户端向服务端方向是安全的，反之则是不安全的。</strong><br>至此，我们确定了使用非对称加密来加密协商过程，结合前文内容，我们知道目前需要使用到对称加密和非对称加密两种算法，事实上https也确实如此。</p>
-<h2 id="具体怎么协商"><a href="#具体怎么协商" class="headerlink" title="具体怎么协商"></a>具体怎么协商</h2><p>我们需要对不同的客户端使用不同的对称加密算法，同时也不能让除两端之外的第3人知道，怎么保证足够安全和算法不确定性？<br><strong>使用随机数：使用随机数来生成对称加密算法，并且只有在交互的那一刻才能真正确定，这也就是为什么https在协议握手阶段会有这么多的随机数的原因了。</strong></p>
-<h2 id="公钥从哪里来"><a href="#公钥从哪里来" class="headerlink" title="公钥从哪里来"></a>公钥从哪里来</h2><p>前面我们已经得出结论：使用非对称加密算法对协商过程加密，并且客户端持有公钥，服务端持有唯一的私钥。<br>这里出现了一个新的问题：客户端的公钥从哪里来？自然是服务端下发的，总不可能每个客户端/浏览器都本地提前保存一个服务端公钥吧，想想也不可能的。<br><strong><em>服务端下发？</em></strong><br>那岂不是又会出现传输不安全的问题嘛？难道这个下发过程又要加密，因为可能被篡改，这感觉又绕回去了最开始的死循环了…(懵逼脸)。<br><img src="/2018/02/15/推演https的安全机制/04.png" alt="图04"><br>我们设想一下，如果有一个全球公认的机构可以来帮我们下发公钥，因为大家对这些机构都是信任的，那客户端只需要判断是否是这些机构下发的，不就可以避免被中间人篡改的问题了，也就不需要循环加密了。<br>这就引出了证书机构和数字证书的概念了。<br><strong>我们不能直接将服务器的公钥传递给客户端，而是第三方机构使用它的私钥对我们的公钥进行加密后，再传给客户端。客户端再使用第三方机构的公钥进行解密。假如被中间人篡改，那客户端的三方机构公钥是不能正常解密的</strong><br>看下简化版的数字证书：（隐藏了其他信息的）<br><img src="/2018/02/15/推演https的安全机制/05.png" alt="图05"><br>再看下使用数字证书后的交互图：<br><img src="/2018/02/15/推演https的安全机制/06.png" alt="图06"><br>至此，我们已经解决了非对称加密公钥的安全获取，也就打通了使用非对称加密保障堆成加密算法的协商过程这一整套流程，看起来一切都是那么美好。</p>
-<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>如果有了解过https的基本都知道还有一个重要的概念：数字签名。但是在上述的推演过程中我们并没有出现过，是不是遗漏了什么呢？<br>回到现实场景，我们确实遗漏了一点：第三方机构并不是只为一个公司制作证书的，机构和公司应该是一对多的关系，也就是说机构也会给中间人的公司发放证书。因此中间人还是可以对你的证书进行篡改，此时客户端并不能区分证书是来自你公司还是中间人，因为不论是你的证书还是中间人的，都是同一个三方机构颁发，客户端都可以正常解密。<br><img src="/2018/02/15/推演https的安全机制/07.png" alt="图07">  </p>
-<h3 id="数字签名：解决同一机构颁发的证书被篡改的问题"><a href="#数字签名：解决同一机构颁发的证书被篡改的问题" class="headerlink" title="数字签名：解决同一机构颁发的证书被篡改的问题"></a>数字签名：解决同一机构颁发的证书被篡改的问题</h3><ol>
-<li>首先解决一个问题：校验同一机构颁发的不同证书的工作应该放在哪里？服务端还是客户端？显然只能是客户端了，因为被篡改不可能发生在服务端，而是在服务端发送证书给客户端过程中，所以只能是客户端校验。</li>
-<li>至于客户端如何验证，需要引入证书的另一个重要属性：证书编号，这就好比毕业证书的编号一样，是一个唯一标识。</li>
-<li><strong>更重要的是，证书上不仅仅带有证书编号，还会写着如何根据证书的内容生成证书编号的方法，可以简单理解为一个MD5值。因此，客户端拿到这些信息后，在本地根据证书的方法生成一个证书编号，然后与证书上的编号进行比对，验证证书信息是否被篡改。同时，为了保证证书编号不被篡改，需要先使用机构的私钥加密后传递给客户端。（小提问：假如不做加密，直接传递MD5生成的证书编号，可能会有什么问题？）</strong></li>
-<li>补充一点，上述情形下如果发生证书被中间人篡改，而且中间人使用同一个机构颁发的证书，那么客户端收到中间人的证书和其中包含的证书编号以及域名，服务器公钥等其他信息。然后按照证书的方法生成证书编号，肯定是和证书中的编号一致的，那岂不是推翻了我们刚刚说的结论？其实是因为我们前面只说了最重要的一点，比对证书编号；事实上还需要比对其他信息，包括域名对比等，这样结合起来就是全面的校验了。<br><img src="/2018/02/15/推演https的安全机制/08.png" alt="图08"> </li>
-</ol>
-<h2 id="最后的问题"><a href="#最后的问题" class="headerlink" title="最后的问题"></a>最后的问题</h2><p>至此，我们还留有最后一手，也是本文的最后一个问题，也就不卖关子了。<br><strong>三方机构的证书我们如何得到？</strong><br>真相只有一个：浏览器和操作系统都会维护一个权威的第三方机构列表（包括它们的公钥）。因为客户端接收到的证书中会写有颁发机构，客户端就根据这个颁发机构的值在本地找相应的公钥。<br><strong>三方机构如何颁布证书给服务器？</strong><br>这个就比较简单了，随便从网上给大家搬运一个流程。拿到证书后，剩下就是配置到公司服务器了。<br><img src="/2018/02/15/推演https的安全机制/09.png" alt="图09"><br><strong>为何不直接使用非对称加密传输？</strong><br>在引入证书以后，其实两端已经可以使用该非对称加密算法进行通信了，但我们还是坚持要协商出一个对称加密算法，并最终以该算法来做传输的加解密，原因很简单，文章开头也说到了，非对称加密只是单向安全的！</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过上文的推演，我们发现在真正建立安全传输之前，已经需要做非常多的工作（SSL/TLS）,目的就是为了协商出一个对称加密算法，在此之后就可以使用该加密算法愉快地传输和加密解密了。<br>这其实也可以反映出为什么https对比http多了这么多交互，效率也下降了不少，一切都是为了安全！<br><strong>总结来说：为了保证两端安全传输，需要对传输内容进行对称加密；但是由于不同客户端需要协商不同的对称加密算法，协商的过程需要使用非对称加密；非对称加密中服务端需要给客户端下发公钥，此过程也是不安全的，需要使用机构的三方私钥加密，也就是数字证书，之后客户端通过保存在本地的机构公钥对证书进行解密，校验等，最后获取到服务器下发的公钥，并进行上述的协商过程。</strong>（就酱吧，好累(╯﹏╰)）。</p>
+<p>目前是我们使用的代码分层，仅供参考:<br><img src="/2018/03/15/见微知著的开发规范/01.png" alt="图01"></p>
+<h1 id="storyboard-nib-纯代码"><a href="#storyboard-nib-纯代码" class="headerlink" title="storyboard / nib / 纯代码"></a>storyboard / nib / 纯代码</h1><blockquote>
+<p>这绝对是一个见仁见智的选择，我们不能讨论谁对谁错，我们只是需要针对自己的项目制订一套规范，毕竟这个问题谁都没有错😶。  </p>
+</blockquote>
+<h3 id="开发速度"><a href="#开发速度" class="headerlink" title="开发速度"></a>开发速度</h3><p>在页面UI上面来说，storyboard和nib确实能提高开发速度，毕竟提供的是可视化布局，一定程度上也减少了反复调整的过程，这点在使用autolayout时候更为显著。</p>
+<h3 id="性能体验"><a href="#性能体验" class="headerlink" title="性能体验"></a>性能体验</h3><p>虽然很久之前Apple就推荐开发者使用storyboard和nib进行页面开发，不过时至今日对比纯代码来说，性能方面还是有所折扣的，尤其在布局复杂，性能吃紧的页面强烈建议使用纯代码。</p>
+<h3 id="团队协作"><a href="#团队协作" class="headerlink" title="团队协作"></a>团队协作</h3><p>团队协作，这个主要是代码管理冲突的问题，个人观点是：不管是纯代码还是nib，前提都是需要给成员划分尽可能不冲突的模块，基础服务层最好由一人负责或者做成私有库的形式，这样才是减少代码冲突最重要的前提。另外，有一些全局hook的操作，可能对nib创建的对象属性不好处理等。</p>
+<h1 id="其他具体规范细则"><a href="#其他具体规范细则" class="headerlink" title="其他具体规范细则"></a>其他具体规范细则</h1><p>上面主要分析了viewController和View的架构以及编码的规范，而且都是基于较高的层面，先把大方向确定好。接下来是具体的编码规范细则，由于时间关系，也没有必要重复码字，就直接把我们目前的规范贴出来，毕竟不涉及任何公司业务。<br><a href="https://github.com/MrLeoZou/Objective-C-Code-Style/wiki/Objective-C-Code-Style" target="_blank" rel="noopener">Objective-C-Code-Style</a>  </p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>本来是还想聊聊架构层，比如MVC和MVVM的，但篇幅太长而且跟主题有点偏离，当然最主要还是懒。所以，本文就到此结束吧，希望对大家有所帮助吧。</p>
 
       
     </div>
@@ -478,8 +472,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/11/深入理解RunLoop/" rel="next" title="深入理解RunLoop">
-                <i class="fa fa-chevron-left"></i> 深入理解RunLoop
+              <a href="/2018/03/10/WKWebView的填坑之路/" rel="next" title="WKWebView的填坑之路">
+                <i class="fa fa-chevron-left"></i> WKWebView的填坑之路
               </a>
             
           </div>
@@ -487,10 +481,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/10/WKWebView的填坑之路/" rel="prev" title="WKWebView的填坑之路">
-                WKWebView的填坑之路 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -656,7 +646,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全通信"><span class="nav-number">2.</span> <span class="nav-text">安全通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一对多的问题"><span class="nav-number">3.</span> <span class="nav-text">一对多的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入新的问题"><span class="nav-number">4.</span> <span class="nav-text">引入新的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对协商过程加密"><span class="nav-number">5.</span> <span class="nav-text">对协商过程加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体怎么协商"><span class="nav-number">6.</span> <span class="nav-text">具体怎么协商</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公钥从哪里来"><span class="nav-number">7.</span> <span class="nav-text">公钥从哪里来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字签名"><span class="nav-number">8.</span> <span class="nav-text">数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数字签名：解决同一机构颁发的证书被篡改的问题"><span class="nav-number">8.1.</span> <span class="nav-text">数字签名：解决同一机构颁发的证书被篡改的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后的问题"><span class="nav-number">9.</span> <span class="nav-text">最后的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#官方规范"><span class="nav-number">1.</span> <span class="nav-text">官方规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#viewController的编码规范"><span class="nav-number">2.</span> <span class="nav-text">viewController的编码规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#storyboard-nib-纯代码"><span class="nav-number">3.</span> <span class="nav-text">storyboard / nib / 纯代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开发速度"><span class="nav-number">3.0.1.</span> <span class="nav-text">开发速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能体验"><span class="nav-number">3.0.2.</span> <span class="nav-text">性能体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#团队协作"><span class="nav-number">3.0.3.</span> <span class="nav-text">团队协作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他具体规范细则"><span class="nav-number">4.</span> <span class="nav-text">其他具体规范细则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
             
 
           </div>
@@ -826,9 +816,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/02/15/推演https的安全机制/';
-          this.page.identifier = '2018/02/15/推演https的安全机制/';
-          this.page.title = '推演https的安全机制';
+          this.page.url = 'http://yoursite.com/2018/03/15/见微知著的开发规范/';
+          this.page.identifier = '2018/03/15/见微知著的开发规范/';
+          this.page.title = '见微知著的开发规范';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://MrLeoZou.disqus.com/embed.js';

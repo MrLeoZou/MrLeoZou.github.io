@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-21T08:42:52.137Z</updated>
+  <updated>2018-03-23T04:20:35.567Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>见微知著的开发规范</title>
+    <link href="http://yoursite.com/2018/03/15/%E8%A7%81%E5%BE%AE%E7%9F%A5%E8%91%97%E7%9A%84%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/"/>
+    <id>http://yoursite.com/2018/03/15/见微知著的开发规范/</id>
+    <published>2018-03-15T13:46:55.000Z</published>
+    <updated>2018-03-23T04:20:35.567Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。</p><h1 id="官方规范"><a href="#官方规范" class="headerlink" title="官方规范"></a>官方规范</h1><p>首先贴出Apple关于cocoa编码的规范，相信这个大家都不应该有争议吧。<br><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html" target="_blank" rel="noopener">Introduction to Coding Guidelines for Cocoa</a>  </p><p>这也是最基础最细致的规范，其他一切规范制定都应该以此为依据，不应该违背该规范精神，总感觉是在说<code>宪法</code>。<br>如果感觉太长了，也可以参考这个：<a href="https://github.com/NYTimes/objective-c-style-guide" target="_blank" rel="noopener">编码规范</a> , 我们的规范也是参考了这个来制定的。</p><h1 id="viewController的编码规范"><a href="#viewController的编码规范" class="headerlink" title="viewController的编码规范"></a>viewController的编码规范</h1><p>其实以前我并不觉得viewController有什么严格的规范，那是因为自己孤陋寡闻，后面接触了多个老旧项目后，特别是多人维护的项目，体会是越发深刻：没有规矩不成方圆，乱的一塌糊涂，同一个项目风格百变。有一个想看看不下去的痛苦，比如目前需要重构的项目😆。</p><ol><li><p><strong>代码分块，使用#pragma mark，这一步尤其重要，而且需要制定好一套#pragma的顺序（这个顺序也是有讲究的，一般生命周期方法，事件，通知，代理/数据源，私有方法，getter和setter）当然这也是仅供参考，只是一旦定好，全部人都按照这个来。这样一来，整个项目的viewController脉络就清晰了，头是头尾是尾。</strong>  </p></li><li><p><strong>属性统一使用getter和setter，理由也是为了统一管理，阅读简洁。</strong></p></li><li><p><strong>理解控制器每个生命周期函数的意义，在合适的方法中添加合适的代码。比如viewDidLoad就做最基本的self.view的属性设置以及添加自view，不要把各种属性，控件之类的初始化或者属性设置放到这里，因为这基本是每个viewController最重要也第一眼阅读的方法，必须要力争做到简洁明了。</strong></p></li><li><p><strong>viewWillAppear，viewDidAppear，viewWilDisAppear，viewDidDisappear这几个方法会在不同时刻可能会频繁触发，因此不要把只需要执行一次的代码添加到这些方法中，特别是耗时好性能的代码。这个问题也是特别容易忽视的，发现老项目中总是习惯把viewDidLoad中的代码放到viewWillAppear，这显然是没有理解这些系统方法的意义。</strong></p></li><li><p><strong>能抽取出去的代码就尽量抽取出去，比如：避免在控制器中直接创建子空间，而是通过自定义view来引入；比如网络请求，私有方法等，可以使用分类或工具类来处理，总之尽可能给viewController减压。</strong>  </p></li><li><p><strong>关于view的布局，也是需要一开始约定好，使用哪种布局方式，Frame，Autolayout还是其他，已经是否使用三方框架。比如重构项目中我们约定代码布局中统一使用Masonry，这样后期不会乱，每个人编码的模块别人都很容易上手。</strong>  </p></li></ol><p>目前是我们使用的代码分层，仅供参考:<br><img src="/2018/03/15/见微知著的开发规范/01.png" alt="图01"></p><h1 id="storyboard-nib-纯代码"><a href="#storyboard-nib-纯代码" class="headerlink" title="storyboard / nib / 纯代码"></a>storyboard / nib / 纯代码</h1><blockquote><p>这绝对是一个见仁见智的选择，我们不能讨论谁对谁错，我们只是需要针对自己的项目制订一套规范，毕竟这个问题谁都没有错😶。  </p></blockquote><h3 id="开发速度"><a href="#开发速度" class="headerlink" title="开发速度"></a>开发速度</h3><p>在页面UI上面来说，storyboard和nib确实能提高开发速度，毕竟提供的是可视化布局，一定程度上也减少了反复调整的过程，这点在使用autolayout时候更为显著。</p><h3 id="性能体验"><a href="#性能体验" class="headerlink" title="性能体验"></a>性能体验</h3><p>虽然很久之前Apple就推荐开发者使用storyboard和nib进行页面开发，不过时至今日对比纯代码来说，性能方面还是有所折扣的，尤其在布局复杂，性能吃紧的页面强烈建议使用纯代码。</p><h3 id="团队协作"><a href="#团队协作" class="headerlink" title="团队协作"></a>团队协作</h3><p>团队协作，这个主要是代码管理冲突的问题，个人观点是：不管是纯代码还是nib，前提都是需要给成员划分尽可能不冲突的模块，基础服务层最好由一人负责或者做成私有库的形式，这样才是减少代码冲突最重要的前提。另外，有一些全局hook的操作，可能对nib创建的对象属性不好处理等。</p><h1 id="其他具体规范细则"><a href="#其他具体规范细则" class="headerlink" title="其他具体规范细则"></a>其他具体规范细则</h1><p>上面主要分析了viewController和View的架构以及编码的规范，而且都是基于较高的层面，先把大方向确定好。接下来是具体的编码规范细则，由于时间关系，也没有必要重复码字，就直接把我们目前的规范贴出来，毕竟不涉及任何公司业务。<br><a href="https://github.com/MrLeoZou/Objective-C-Code-Style/wiki/Objective-C-Code-Style" target="_blank" rel="noopener">Objective-C-Code-Style</a>  </p><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>本来是还想聊聊架构层，比如MVC和MVVM的，但篇幅太长而且跟主题有点偏离，当然最主要还是懒。所以，本文就到此结束吧，希望对大家有所帮助吧。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;本文将要分享一个颇具争议的话题：iOS开发规范，也是近期项目重构在这方面的一些体会和见解。在此先行声明，本文的规范都是个人见解，望君看完付诸一笑，切勿抨击，毕竟一千个读者就有一千个程序员，惹不起🙃。&lt;/p&gt;
+&lt;h1 id=&quot;官方规范&quot;&gt;&lt;a href=&quot;#官方规范&quot; cl
+      
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>WKWebView的填坑之路</title>
