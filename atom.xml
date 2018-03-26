@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-23T04:20:35.567Z</updated>
+  <updated>2018-03-26T08:22:58.454Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从APP的启动优化说起</title>
+    <link href="http://yoursite.com/2018/03/20/%E4%BB%8EAPP%E7%9A%84%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E8%AF%B4%E8%B5%B7/"/>
+    <id>http://yoursite.com/2018/03/20/从APP的启动优化说起/</id>
+    <published>2018-03-20T04:27:15.000Z</published>
+    <updated>2018-03-26T08:22:58.454Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/2018/03/20/从APP的启动优化说起/01.png" alt="图01"></p><h1 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h1><h2 id="热启动和冷启动"><a href="#热启动和冷启动" class="headerlink" title="热启动和冷启动"></a>热启动和冷启动</h2><blockquote><p><strong>APP冷启动</strong>：当应用启动时，后台没有该应用的进程，这时系统会重新创建一个新的进程分配给该应用， 这个启动方式就叫做冷启动（后台不存在该应用进程）。<br><strong>APP热启动</strong>：应用从前台进入后台，并且还没有被kill掉，此时重新打开该APP，这种方式就叫热启动（后台已经存在该应用进程）。</p></blockquote><p>本文主要探讨冷启动的优化，毕竟对比来说热启动可优化的空间太小了。  </p><h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><h4 id="main之前"><a href="#main之前" class="headerlink" title="main之前"></a>main之前</h4><p><img src="/2018/03/20/从APP的启动优化说起/02.png" alt="图02"><br>main函数之前的流程，基本上可以用这张图来表示，这也是取自WWDC上的PPT，下面大致解读下：  </p><ul><li><p><strong>Load dylibs</strong>：加载并分析每个dylib（大部分是iOS系统的），找到其Mach-O文件，打开并读取验证有效性，找到代码签名注册到内核，<br>最后对dylib的每个segment调用mmap()。  </p></li><li><p><strong>Rebase/Bind</strong>：dylib加载完成之后，它们处于相互独立的状态，需要绑定起来。<br>在dylib的加载过程中，系统为了安全考虑，引入了ASLR（Address Space Layout Randomization）技术和代码签名。<br>由于ASLR的存在，镜像（Image，包括可执行文件、dylib和bundle）会在随机的地址上加载，和之前指针指向的地址（preferred_address）会有一个偏差（slide），dyld需要修正这个偏差，来指向正确的地址。<br>Rebase在前，Bind在后，Rebase做的是将镜像读入内存，修正镜像内部的指针，性能消耗主要在IO。<br>Bind做的是查询符号表，设置指向镜像外部的指针，性能消耗主要在CPU计算。  </p></li><li><p><strong>ObjC</strong>：OC的runtime需要维护一张类名与类的方法列表的全局表。<br>dyld做了如下操作：<br>对所有声明过的OC类，将其注册到这个全局表中（class registration）<br>将category的方法插入到类的方法列表中（category registration）<br>检查每个selector的唯一性（selector uniquing）。  </p></li><li><p><strong>Initalizers</strong>：dyld运行APP的初始化函数，调用每个OC类的+load方法，调用C++的构造器函数（attribute((constructor))修饰），创建非基本类型的C++静态全局变量，然后执行main函数。</p></li></ul><h4 id="main之后"><a href="#main之后" class="headerlink" title="main之后"></a>main之后</h4><p><code>从 didFinishLaunchingWithOptions 到第一个界面渲染出来的总时间。这是我的理解，当然你也可以取其他节点作为结束点，这都不影响分析问题。</code><br>从定义上来看，很明显这部分内容都是我们自己编码实现的，可控程度非常高。  </p><h1 id="如何精确度量时间？"><a href="#如何精确度量时间？" class="headerlink" title="如何精确度量时间？"></a>如何精确度量时间？</h1><h3 id="main之前-1"><a href="#main之前-1" class="headerlink" title="main之前"></a>main之前</h3><p>Xcode非常友好地为开发者提供了度量工具， Edit scheme -&gt; Run -&gt; Arguments 中将环境变量 DYLD_PRINT_STATISTICS 设为 1，就可以看到 main 之前各个阶段的时间消耗。<br>顺便附上我们项目的启动时间打印：  </p><p><code>iphone 6plus, iOS 10.2.3</code>  </p><p><img src="/2018/03/20/从APP的启动优化说起/06.png" alt="图06"></p><h3 id="main之后-1"><a href="#main之后-1" class="headerlink" title="main之后"></a>main之后</h3><p>这部分就需要手动添加代码来记录时间，为了尽可能保证记录的粒度够细，做好在每一个独立的事项代码后插入打点代码。<br>在此，可以参考三方的时间记录是否满足，减少造轮子工作：<br><a href="https://github.com/beiliao-mobile/BLStopwatch" target="_blank" rel="noopener">iOS上的时间打点工具：BLStopwatch</a>  </p><p>同样，下面贴出工程的打点记录：   </p><p><code>iphone 6plus, iOS 10.2.3</code>   </p><p><img src="/2018/03/20/从APP的启动优化说起/03.JPG" alt="图03"></p><h1 id="分析-amp-优化"><a href="#分析-amp-优化" class="headerlink" title="分析 &amp; 优化"></a>分析 &amp; 优化</h1><h3 id="main之前-2"><a href="#main之前-2" class="headerlink" title="main之前"></a>main之前</h3><p>从上面的理论知识，可以知道main之前的耗时中，比较好从代码层面处理的也就是最后一步：Initalizers。通过对项目代码搜索，+load方法只在两个三方库中有调用，这个我们也是无能为力的。假设main之前的启动耗时目前看来还可以接受，因此重点放在main之后的优化。</p><h3 id="main之后-2"><a href="#main之后-2" class="headerlink" title="main之后"></a>main之后</h3><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>通过上面的截图可以知道，didFinishLaunchingWithOptions 函数的整个生命周期时间点。不过我们最开始定义的main之后的启动时间是指：从执行 didFinishLaunchingWithOptions 开始到第一个页面展示出来，所以我们还需要把第一个页面展示逻辑加进来一起分析。  </p><p><strong><code>假设</code>：如果第一个页面的展示也就是viewDidLoad调用是在 didFinishLaunchingWithOptions 执行完成之前，那么前面的截图记录也就正好是满足我们main函数之后的启动时间定义，无需做其他操作。但如果viewDidLoad是在 didFinishLaunchingWithOptions 完成后再执行，那么需要在截图时间基础上加上 viewDidLoad 的执行时间。</strong>  </p><p><strong><code>验证</code>：</strong> 项目页面加载流程：目前我们项目是把广告页面作为window的rootVc，然后在广告页面中处理相关逻辑，切换rootVc。那就是说我们的第一个页面是广告页面，分别在delegate中的didFinishLaunchingWithOptions 方法最前面和最后面（return之前）添加打印记录，同时在广告页面的 viewDidLoad 中添加log，下面看下输出结果：（敏感信息经过处理）   </p><p><img src="/2018/03/20/从APP的启动优化说起/04.png" alt="图04">  </p><p>从图中很明显可以看出（先忽略中间那一堆”阻塞打印”），前面的假设是成立的，<strong>广告页面的viewDidLoad是在 didFinishLaunchingWithOptions 中执行的，也就是说前面的截图记录就是我们需要的main之后的启动时间。</strong>  </p><p>ok，我们得到了main之后的启动时间log，其实中间的”阻塞打印”是我特意添加的测试log，就是为了验证一点：<br><strong>如果在第一个页面的viewDidLoad中做了耗时操作，将会直接影响到 didFinishLaunchingWithOptions 执行时长，也就会影响main之后的启动时间。</strong></p><h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p><strong><code>优化 didFinishLaunchingWithOptions 中代码</code>：</strong><br>结果看来，总共有13个初始化工作在 didFinishLaunchingWithOptions 中进行，这里有比较大的优化空间。<br>这是影响main之后启动时间的最大凶手，优化原则很简单：把能往后挪的代码统统往后挪，延迟添加，尽可能不要增加该函数的执行时间；另外千万不要在里面执行任何耗时操作。  </p><p><strong><code>优化第一个页面的 viewDidLoad 中代码</code>：</strong><br>优化原则同上，毕竟原理都是一模一样的。（此项目中第一个页面的 viewDidLoad 只做了必要的非耗时工作，因此未贴出优化对比。）  </p><h1 id="优化后对比"><a href="#优化后对比" class="headerlink" title="优化后对比"></a>优化后对比</h1><h3 id="main之后-3"><a href="#main之后-3" class="headerlink" title="main之后"></a>main之后</h3><p><img src="/2018/03/20/从APP的启动优化说起/05.JPG" alt="图05">  </p><p>这是优化过后的 didFinishLaunchingWithOptions ，可以看到目前只剩下8个必要的初始化工作，其他都被延后执行了，具体哪些工作可以延后执行就要根据实际项目实际分析了，设计项目内容这里我也不方便具体说明。<br><code>结果就是：main之后启动时间从 1.24 --&gt; 0.22,缩减时间超80%，由于该项目目前启动时间还算良好,大约 0.72 + 1.24 = 1.96，所以总体优化后效果，大约 0.72 + 0.22 = 094；视觉上不会有特别大的感知，如果优化前时间已经是5s这种，那视觉效果应该可以立竿见影，不过这都不影响我们优化的成果，毕竟数据最能直观说明问题。</code>  </p><p><strong>【注】本文的相关记录数据（截图），都是经过3~5次测试后，获取的平均值，不代表偶发性。</strong></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;img src=&quot;/2018/03/20/从APP的启动优化说起/01.png&quot; alt=&quot;图01&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;理论知识&quot;&gt;&lt;a href=&quot;#理论知识&quot; class=&quot;headerlink&quot; title=&quot;理论知识&quot;&gt;&lt;/a&gt;理论知识&lt;/h1&gt;&lt;h2 i
+      
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>见微知著的开发规范</title>
